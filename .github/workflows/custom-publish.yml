@@ -50,7 +50,7 @@ jobs:
   # Push custom image to GitHub Packages.
   custom-push:
     # Ensure test job passes before pushing image.
-    needs: custom-build-test
+    # needs: custom-build-test
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
