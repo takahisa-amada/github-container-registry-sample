@@ -1,0 +1,82 @@
+name: Docker Base Image Build & Publish
+
+on:
+  push:
+    # Publish `main` as Docker `latest` image.
+    branches:
+      - main
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+    paths:
+      - 'docker/base/**'
+      - '.github/workflows/base-publish.yml'
+
+  # Run tests for any PRs.
+  pull_request:
+    paths:
+      - 'docker/base/**'
+      - '.github/workflows/base-publish.yml'
+
+
+env:
+  DOCKER_BUILDKIT: 1
+  BASE_IMAGE_NAME: gpack-base
+  BASE_DOCKER_FILE: docker/base/Dockerfile
+
+jobs:
+  # Build & Run tests.
+  base-build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Base Image Build and Tests
+        run: |
+            # build base image
+            docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
+
+            # test base image
+            docker run $BASE_IMAGE_NAME echo "TEST ECHO: test base docker image"
+
+  # Push base image to GitHub Packages.
+  base-push:
+    # Ensure test job passes before pushing image.
+    needs: base-build-test
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build base image
+        run: docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
+
+      - name: Log into registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+      - name: Push base image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$BASE_IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          docker tag $BASE_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
