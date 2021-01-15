@@ -2,24 +2,48 @@
 
 GitHub Container RegistryにDockerのイメージを登録して利用するサンプルプロジェクト。
 
-下のGitHub Packagesを利用するリポジトリをGitHub Container Registryに対応したもの。
+下のGitHub Packagesを利用するリポジトリをGitHub Container Registryに変更したもの。
 
-- [github-packages-sample](#github-container-registry-sample)
-    - [注意点](#注意点)
-    - [手順概略](#手順概略)
-    - [ファイル構成](#ファイル構成)
-    - [Personal access tokensの生成](#personal-access-tokensの生成)
-    - [Dockerコマンドによる操作](#dockerコマンドによる操作)
-    - [簡略用シェルスクリプト](#簡略用シェルスクリプト)
+[https://github.com/k0inoue/github-packages-sample]
+
+- [github-container-registry-sample](#github-container-registry-sample)
+  - [GitHub Packagesとの違い](#GitHub Packagesとの違い)
+  - [注意点](#注意点))
+  - [手順概略](#手順概略)
+  - [ファイル構成](#ファイル構成)
+  - [Personal access tokensの生成](#personal-access-tokensの生成)
+  - [Dockerコマンドによる操作](#dockerコマンドによる操作)
+  - [簡略用シェルスクリプト](#簡略用シェルスクリプト)
+
+
+## GitHub Packagesとの違い
+GitHub PackagesとGitHub Container Registryの主な違いは以下。
+詳細は[こちら](https://docs.github.com/en/free-pro-team@latest/packages/guides/migrating-to-github-container-registry-for-docker-images#key-differences-between-github-container-registry-and-the-docker-package-registry)を参照されたし。
+
+- 権限設定を細かく決められる
+- GitHub Container Registryにpushしたものは、匿名ユーザーでもpullできる
+- GitHub Actions上でもGitHub Container Registryからpullできる
+  - GitHub Actions上では、GitHub Packagesからpullできなかった
+- レジストリのドメインが違う
+  - GitHub Packages:　docker.pkg.github.com/OWNER/REPOSITORY/IMAGE_NAME
+  - GitHub Container Registry:　ghcr.io/OWNER/IMAGE_NAME
+- GitHub Actionsでdocker login する場合は、Personal access tokensが必須になる
+  - GitHub Packagesでは、GITHUB_TOKENが使えたので不要だった
+- プレビュー版の機能の為、GitHub上の設定で機能を有効にしないと使えない
+
 
 
 ## 注意点
 
 本リポジトリをforkして試す場合は、以下の点に注意。
 
+-「Improved container support」を有効にすること(後述の手順概略の1)
+- アクセストークンを生成しておくこと(後述の手順概略の2)
 - `cmd/config.sh`の`GITHUB_USER`を各自のGitHubアカウント名に変更すること
-- [Personal access tokensの生成](#personal-access-tokensの生成)に沿ってアクセストークンを生成しておくこと
-- forkしたリポジトリに対してpushすると、DockerイメージのbuildとpushをGitHub Action上で行う
+- 生成したPersonal access tokenの値をGitHubのsecret変数（CR_PAT）として追加登録しておくこと
+- pushした`gpack-base`イメージは、[こちらの手順](https://qiita.com/zembutsu/items/1effae6c39ceae3c3d0a)に沿ってpublicに変更する必要がある
+  - 上記手順を行わない間は、GitHub Actionの`gpack-custom`のビルドで失敗する（はず）
+
 
 ## 手順概略
 GitHub Container RegistryでDockerのイメージを利用する大まかな手順は以下となる。
@@ -35,14 +59,14 @@ GitHub Container RegistryでDockerのイメージを利用する大まかな手�
 4. 生成したPersonal access tokenの値をGitHubのsecret変数として追加登録する
    - 追加方法は[こちらの手順](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository)を参照
    - 本リポジトリでは追加する変数名は「CR_PAT」とする
-   - 追加した変数はGitHub Actionsの*.ymlファイルで参照している
+   - 追加した変数はGitHub Actions用の`*.yml`ファイルで参照している
 5. `docker build`でイメージを作成する
 6. `docker login`でGitHubにログインする
 7. `docker tag`で作成したイメージにタグ付けをしてリポジトリとも紐付ける
 8. `docker push`でリポジトリへイメージをアップロードする
-9.  `docker pull`でリポジトリからイメージを取得する
+9. `docker pull`でリポジトリからイメージを取得する
 
-本プロジェクトでは、便宜上、手順4〜8を行うためのスクリプトを用意している。
+本プロジェクトでは、便宜上、手順5〜9を行うためのスクリプトを用意している。
 
 
 ## ファイル構成
@@ -128,6 +152,7 @@ chmod 600 $HOME/.github-token
 ## Dockerコマンドによる操作
 
 各手順のdockerコマンドは以下の通り。
+本リポジトリでは、以下のコマンドをまとめた簡略用シェルスクリプトを作成している。
 
 ```
 # ビルド
@@ -191,7 +216,7 @@ GITHUB_TOKEN_FILE=${HOME}/.github-token
 DOCKER_FILE_PATH=docker/base/Dockerfile
 ```
 
-## 派生イメージ(docker/Dockerfile)のビルド実行例
+## 派生イメージ(docker/custom/Dockerfile)のビルド実行例
 
 本リポジトリのルートディレクトリで以下のコマンドを実行する。
 
