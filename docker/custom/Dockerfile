@@ -1,4 +1,4 @@
-FROM docker.pkg.github.com/k0inoue/gpack-base
+FROM ghcr.io/k0inoue/gpack-base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
