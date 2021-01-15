@@ -64,11 +64,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: $BASE_DOCKER_FILE
+          file: ${{ env.BASE_DOCKER_FILE }}
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:$RELEASE_VERSION
+            ghcr.io/${{ github.repository_owner }}/${{ env.BASE_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
   # Push custom image to GitHub Packages.
   custom-push:
@@ -95,9 +95,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: $CUSTOM_DOCKER_FILE
+          file: ${{ env.CUSTOM_DOCKER_FILE }}
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:$RELEASE_VERSION
+            ghcr.io/${{ github.repository_owner }}/${{ env.CUSTOM_IMAGE_NAME }}:${{ env.RELEASE_VERSION }}
 
