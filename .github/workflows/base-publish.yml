@@ -28,24 +28,24 @@ env:
 
 jobs:
   # Build & Run tests.
-  base-build-test:
-    runs-on: ubuntu-latest
+  # base-build-test:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Base Image Build and Tests
-        run: |
-            # build base image
-            docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
+  #     - name: Base Image Build and Tests
+  #       run: |
+  #           # build base image
+  #           docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
 
-            # test base image
-            docker run $BASE_IMAGE_NAME echo "TEST ECHO: test base docker image"
+  #           # test base image
+  #           docker run $BASE_IMAGE_NAME echo "TEST ECHO: test base docker image"
 
   # Push base image to GitHub Packages.
   base-push:
     # Ensure test job passes before pushing image.
-    needs: base-build-test
+    # needs: base-build-test
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
