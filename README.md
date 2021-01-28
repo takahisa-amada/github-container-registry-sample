@@ -1,13 +1,13 @@
 # github-container-registry-sample
 
-<!-- START doctoc -->
-<!-- END doctoc -->
-
 GitHub Container RegistryにDockerのイメージを登録して利用するサンプルプロジェクト。
 
 下のGitHub Packagesを利用するリポジトリをGitHub Container Registryに変更したもの。
 
 [https://github.com/k0inoue/github-packages-sample]
+
+<!-- START doctoc -->
+<!-- END doctoc -->
 
 ## GitHub Packagesとの違い
 GitHub PackagesとGitHub Container Registryの主な違いは以下。
