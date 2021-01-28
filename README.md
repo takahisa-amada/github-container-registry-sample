@@ -9,16 +9,6 @@ GitHub Container RegistryにDockerのイメージを登録して利用するサ�
 
 [https://github.com/k0inoue/github-packages-sample]
 
-- [github-container-registry-sample](#github-container-registry-sample)
-  - [GitHub Packagesとの違い](#github-packagesとの違い)
-  - [注意点](#注意点))
-  - [手順概略](#手順概略)
-  - [ファイル構成](#ファイル構成)
-  - [Personal access tokensの生成](#personal-access-tokensの生成)
-  - [Dockerコマンドによる操作](#dockerコマンドによる操作)
-  - [簡略用シェルスクリプト](#簡略用シェルスクリプト)
-
-
 ## GitHub Packagesとの違い
 GitHub PackagesとGitHub Container Registryの主な違いは以下。
 詳細は[こちら](https://docs.github.com/en/free-pro-team@latest/packages/guides/migrating-to-github-container-registry-for-docker-images#key-differences-between-github-container-registry-and-the-docker-package-registry)を参照されたし。
