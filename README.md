@@ -153,7 +153,7 @@ $HOME/
 
 [こちらのページ](https://github.com/settings/tokens)から以下の手順に沿って、GitHubのPersonal access tokensを生成する。
 
-### 1. \[Develops settings\]をクリック
+### 1. Develops settingsをクリック
 ---
 
 ![step1](images/step1.png)
@@ -161,7 +161,7 @@ $HOME/
 <br />
 
 
-### 2. \[Personal access tokens\] --> \[Generate new token\]をクリック
+### 2. Personal access tokens --> Generate new tokenをクリック
 ---
 
 ![step2](images/step2.png)
@@ -169,7 +169,7 @@ $HOME/
 <br />
 
 
-### 3. \[Select scopes\]で権限設定
+### 3. Select scopesで権限設定
 ---
 
 以下にチェックを入れて、ページ下部にある、\[Generate token\]をクリック。
