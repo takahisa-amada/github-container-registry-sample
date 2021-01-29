@@ -24,6 +24,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: TOC Generator
-        uses: technote-space/toc-generator@v2
+        uses: technote-space/toc-generator@v3
         with:
+          MAX_HEADER_LEVEL: 2 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
