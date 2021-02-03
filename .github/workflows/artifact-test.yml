@@ -1,4 +1,4 @@
-name: Docker Base Image Build & Publish
+name: Docker Base Image Build with Artifact
 
 on:
   push:
