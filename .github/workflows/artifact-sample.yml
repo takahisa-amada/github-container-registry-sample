@@ -1,0 +1,75 @@
+name: Artifact Sample
+
+on:
+  push:
+    # Publish `main` as Docker `latest` image.
+    branches:
+      - master
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+    paths:
+      - 'docker/base/**'
+      - 'docker/custom/**'
+      - '.github/workflows/artifact-test.yml'
+
+env:
+  DOCKER_BUILDKIT: 1
+  BASE_IMAGE_NAME: artifact-base
+  BASE_DOCKER_FILE: docker/base/Dockerfile
+  CUSTOM_IMAGE_NAME: artifact-custom
+  CUSTOM_DOCKER_FILE: docker/custom/Dockerfile2
+  RELEASE_VERSION: 0.0.1
+
+jobs:
+
+  # Push base image to GitHub Packages.
+  base-push:
+    # Ensure test job passes before pushing image.
+    # needs: base-build-test
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file ${{ env.BASE_DOCKER_FILE }} --tag ${{ env.BASE_IMAGE_NAME }}
+
+      - name: Save image to file
+        run: docker save ${{ env.BASE_IMAGE_NAME }} > ${{ env.BASE_IMAGE_NAME }}.tar
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.BASE_IMAGE_NAME }}
+          path: ${{ env.BASE_IMAGE_NAME }}.tar
+          retention-days: 5
+
+  # Push custom image to GitHub Packages.
+  custom-push:
+    # Ensure test job passes before pushing image.
+    needs: base-push
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.BASE_IMAGE_NAME }}
+
+      - name: load image from file
+        run: docker load --input ${{ env.BASE_IMAGE_NAME }}.tar
+
+      - name: Build image
+        run: docker build . --file ${{ env.CUSTOM_DOCKER_FILE }} --tag ${{ env.CUSTOM_IMAGE_NAME }}
+
+
+
