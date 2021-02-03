@@ -37,16 +37,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file $BASE_DOCKER_FILE --tag $BASE_IMAGE_NAME
+        run: docker build . --file ${{ env.BASE_DOCKER_FILE }} --tag ${{ env.BASE_IMAGE_NAME }}
 
       - name: Save image to file
-        run: docker save $BASE_IMAGE_NAME > $BASE_IMAGE_NAME.tar
+        run: docker save ${{ env.BASE_IMAGE_NAME }} > ${{ env.BASE_IMAGE_NAME }}.tar
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: $BASE_IMAGE_NAME
-          path: $BASE_IMAGE_NAME.tar
+          name: ${{ env.BASE_IMAGE_NAME }}
+          path: ${{ env.BASE_IMAGE_NAME }}.tar
           retention-days: 5
 
   # Push custom image to GitHub Packages.
@@ -63,13 +63,13 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v2
         with:
-          name: $BASE_IMAGE_NAME
+          name: ${{ env.BASE_IMAGE_NAME }}
 
       - name: load image from file
-        run: docker load --input $BASE_IMAGE_NAME.tar
+        run: docker load --input ${{ env.BASE_IMAGE_NAME }}.tar
 
       - name: Build image
-        run: docker build --file $CUSTOM_DOCKER_FILE --tag $CUSTOM_IMAGE_NAME        
+        run: docker build --file ${{ env.CUSTOM_DOCKER_FILE }} --tag ${{ env.CUSTOM_IMAGE_NAME }}
 
 
 
