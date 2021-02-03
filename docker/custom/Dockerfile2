@@ -1,4 +1,4 @@
-FROM ghcr.io/k0inoue/gpack-base
+FROM artifact-base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
