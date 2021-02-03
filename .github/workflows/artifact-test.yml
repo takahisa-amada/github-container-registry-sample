@@ -69,7 +69,7 @@ jobs:
         run: docker load --input ${{ env.BASE_IMAGE_NAME }}.tar
 
       - name: Build image
-        run: docker build --file ${{ env.CUSTOM_DOCKER_FILE }} --tag ${{ env.CUSTOM_IMAGE_NAME }}
+        run: docker build . --file ${{ env.CUSTOM_DOCKER_FILE }} --tag ${{ env.CUSTOM_IMAGE_NAME }}
 
 
 
