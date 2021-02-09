@@ -15,7 +15,7 @@ on:
       - 'docker/custom/**'
       - '.github/workflows/artifact-test.yml'
 
-    workflow_dispatch:
+  workflow_dispatch:
 
 env:
   DOCKER_BUILDKIT: 1
