@@ -43,7 +43,7 @@ jobs:
 
       - name: Run test script
         shell: bash
-        run: docker run --mount type=bind,src=${PWD}/work_dir,dst=/home/work_dir ${{ env.BASE_IMAGE_NAME }} bash /home/work_dir/test.sh
+        run: docker run --mount type=bind,src=${PWD}/work_dir,dst=/home/developer/work_dir ${{ env.BASE_IMAGE_NAME }} bash /home/developer/work_dir/test.sh
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
